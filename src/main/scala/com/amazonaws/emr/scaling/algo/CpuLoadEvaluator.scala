@@ -9,9 +9,9 @@ class CpuLoadEvaluator extends Evaluator with Logging {
 
   override val Label: String = "CPU Evaluation"
 
-  private val nodesFraction = 0.8 // 80% of the Presto Workers (CORE + TASK)
-  private val expandThreshold = 0.7 // 70% cpu utilization
-  private val shrinkThreshold = 0.5 // 50% cpu utilization
+  private val nodesFraction = 0.75 // 80% of the Presto Workers (CORE + TASK)
+  private val expandThreshold = 0.65 // 70% cpu utilization
+  private val shrinkThreshold = 0.4 // 50% cpu utilization
 
   logger.info(s"CpuLoadEvaluator initialized with: nodesFraction=$nodesFraction expandThreshold=$expandThreshold shrinkThreshold=$shrinkThreshold")
 
