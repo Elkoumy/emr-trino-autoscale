@@ -29,7 +29,8 @@ class TrinoMetricStore()(implicit val system: ActorSystem) extends Logging {
 
   /** Collect all Trino metrics */
   def collect(): Unit = {
-
+    logger.info("Start Collecting Metrics")
+    println("Start Collecting Metrics ... println method")
     val result = for {
       clusterMemory <- trinoJmx.getClusterMemory
       clusterQueryStats <- trinoJmx.getClusterQueryStats
@@ -40,6 +41,7 @@ class TrinoMetricStore()(implicit val system: ActorSystem) extends Logging {
 
     result.onComplete {
       case Success(x) =>
+        logger.info("Collecting Metrics Success")
         clusterMemory = x._1
         logger.info(s"Cluster memory stats: $clusterMemory")
         clusterQueries = x._2
@@ -76,6 +78,7 @@ class TrinoMetricStore()(implicit val system: ActorSystem) extends Logging {
         }
 
       case Failure(e) =>
+        logger.info("Collecting Metrics Failure")
         println("Error collecting Trino metrics")
         e.printStackTrace()
 

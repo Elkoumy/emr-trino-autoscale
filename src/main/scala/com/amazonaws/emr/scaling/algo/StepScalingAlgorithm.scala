@@ -15,11 +15,12 @@ class StepScalingAlgorithm(
   private val capacityType = workers.units
   private val stepExpand = if (capacityType.equals(NODES)) Config.IgScaleStepExpand else Config.IfScaleStepExpand
   private val stepShrink = if (capacityType.equals(NODES)) Config.IgScaleStepShrink else Config.IfScaleStepShrink
-
+  logger.info("Inside StepScalingAlgorithm")
   logger.info(s"Using ${this.getClass.getName} - min:$minCapacity max:$maxCapacity expand:$stepExpand shrink: $stepShrink unit: $capacityType")
 
   override def expand(running: Int, required: Int): Int = {
     val computedStep = (running + stepExpand).max(required)
+    logger.info("Inside StepScalingAlgorithm.expand()")
     computedStep.min(maxCapacity)
   }
 

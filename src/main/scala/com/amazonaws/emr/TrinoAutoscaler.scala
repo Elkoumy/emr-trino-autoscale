@@ -20,7 +20,7 @@ object TrinoAutoscaler extends App with Logging {
   private val workers = Workers(EmrClusterId)
   private val scaling = new ScalingManager(workers)
   private val metrics = new TrinoMetricStore()
-
+  logger.info("Starting TrinoAutoscaler .... !")
   system.scheduler.scheduleWithFixedDelay(
     initialDelay = 0 seconds,
     delay = Config.MetricsCollectInterval

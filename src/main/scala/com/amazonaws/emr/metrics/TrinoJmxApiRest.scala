@@ -87,7 +87,8 @@ class TrinoJmxApiRest(implicit val system: ActorSystem) extends TrinoJmx with Lo
     val nodeStats = activeNodes.map { node =>
       val nodeUrl = s"$TrinoRestSchema://$node:$TrinoServerPort/v1/jmx/mbean/java.lang:type=OperatingSystem"
       getMBeanAttributes(nodeUrl).map { m =>
-        //logger.debug(s"node:$node map: $m")
+//        logger.debug(s"node:$node map: $m")
+        logger.info(s"node:$node map: $m")
         if (m.isEmpty) None
         else Some(ClusterNodesCpuMetrics(
           node,

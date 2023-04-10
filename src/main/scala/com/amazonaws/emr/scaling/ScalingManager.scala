@@ -24,7 +24,7 @@ class ScalingManager(workers: Workers) extends Logging {
   private var scalingLastOpTimeMs: Long = 0L
 
   def evaluate(store: TrinoMetricStore): Unit = {
-
+    logger.info("Evaluate is running")
     if (isIdle(store.getQueryStats)) {
       logger.info("Trino is Idle. No query activity was performed in the last 5 minutes")
       evaluateAndPerform(ResizeAction(SHRINK, workers.minCapacity))
@@ -58,6 +58,8 @@ class ScalingManager(workers: Workers) extends Logging {
           e.printStackTrace()
       }
     }
+
+    logger.info("End of Evaluate")
   }
 
   /**
@@ -69,6 +71,7 @@ class ScalingManager(workers: Workers) extends Logging {
     val currentCapacity = workers.running
     val requestedCapacity = workers.requested
 
+    logger.info("Start evaluateAndPerform")
     op.action match {
 
       case com.amazonaws.emr.scaling.ResizeType.EXPAND =>
@@ -80,8 +83,10 @@ class ScalingManager(workers: Workers) extends Logging {
           logger.info(s"Scaling - Shrink - from $currentCapacity to ${op.capacity} ${workers.units}")
           workers.resize(workers.maxCapacity)
         } else {
+          logger.info("Scaling starts")
           logger.info(s"Scaling - Expand - from $currentCapacity to ${op.capacity} ${workers.units}")
           workers.resize(op.capacity)
+          logger.info("Scaling ends")
         }
 
       case com.amazonaws.emr.scaling.ResizeType.SHRINK =>
@@ -98,6 +103,7 @@ class ScalingManager(workers: Workers) extends Logging {
         logger.info(s"No Scaling - no action required")
 
     }
+    logger.info("End evaluateAndPerform")
   }
 
   /**
