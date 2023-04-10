@@ -94,6 +94,7 @@ object Workers extends Logging {
 
     /** Initialize managed workers */
     override protected def initialize(): scala.Unit = {
+      logger.info("Inside worker.initialize")
       logger.info(s"Initializing $label")
       val tasks = Config.IgInstanceTypes.map(i =>
         TaskSpec(s"${Config.WorkersNamePrefix}-$defaultMarket-$i", List(Instance(i, 1, defaultMarket)))
@@ -104,7 +105,7 @@ object Workers extends Logging {
 
     /** Create a new TASK Instance Group */
     override protected def create(taskSpec: TaskSpec, taskRunning: List[TaskRunning]): scala.Unit = {
-
+      logger.info("Inside worker.create")
       val validTask = taskRunning
         .filter(g => g.name.equalsIgnoreCase(taskSpec.name))
         .filter(g => g.instances.head.name.equalsIgnoreCase(taskSpec.instances.head.name))
@@ -165,6 +166,7 @@ object Workers extends Logging {
      * @param count number of instances requested
      */
     override def resize(count: Int): scala.Unit = {
+      logger.info("Inside worker.resize")
       logger.debug(s"Received scaling request: $count ($units)")
 
       running - count match {
@@ -296,6 +298,7 @@ object Workers extends Logging {
 
     /** Initialize Instance Fleet */
     override protected def initialize(): scala.Unit = {
+      logger.info("Inside IfWorkers.initialize")
       logger.info(s"Initializing $label")
       val instanceTypes = Config.IfInstanceTypes
       val instanceWights = Config.IfInstanceTypesUnits.map(_.toInt)
@@ -327,6 +330,7 @@ object Workers extends Logging {
       } else if (validTask.isEmpty && taskRunning.nonEmpty) {
         throw new RuntimeException(s"Existing TASK $label doesn't match scaling specifications")
       } else {
+        logger.info("inside creating IF")
         logger.info(s"Creating $label with: $taskSpec")
         val (onDemandCapacity, spotCapacity) = if (Config.IfShouldUseSpot) (0, Config.IfMinNumUnits) else (Config.IfMinNumUnits, 0)
         val instanceTypeConf = taskSpec.instances.map(i => new InstanceTypeConfig().withInstanceType(i.name).withWeightedCapacity(i.weight))
@@ -345,6 +349,7 @@ object Workers extends Logging {
 
         managed.append(TaskRunning(response.getInstanceFleetId, taskSpec.name, taskSpec.instances))
       }
+      logger.info("end of create IF")
     }
 
     /** List active TASK Instance Fleet */
@@ -383,7 +388,7 @@ object Workers extends Logging {
       logger.info("Worker: Refresh the status of the managed Instance Fleet")
       val request = new ListInstanceFleetsRequest().withClusterId(clusterId)
       val response = client.listInstanceFleets(request)
-
+      logger.info(s"Status $response")
       val status = response.getInstanceFleets.asScala.toList
         .filter(g => managed.map(_.id).toList.contains(g.getId))
         .map { g =>
