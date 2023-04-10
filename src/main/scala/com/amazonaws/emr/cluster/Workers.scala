@@ -308,7 +308,7 @@ object Workers extends Logging {
       if (instanceTypes.size != instanceWights.size) {
         throw new RuntimeException("Wrong Instance Fleet configurations")
       }
-
+      logger.info("End Initialize Instance Fleet")
       val taskSpec = TaskSpec(Config.WorkersNamePrefix, instances.map(i => Instance(i._1, i._2, defaultMarket)))
       create(taskSpec, list())
       logger.info(s"Managed $label: ${managed.map(_.id).mkString("", ", ", "")}")
@@ -316,7 +316,7 @@ object Workers extends Logging {
 
     /** Create a new TASK Instance Fleet */
     override protected def create(taskSpec: TaskSpec, taskRunning: List[TaskRunning]): scala.Unit = {
-
+      logger.info("Worker: Create a new TASK Instance Fleet")
       val validTask = taskRunning
         .filter(g => g.name.equalsIgnoreCase(taskSpec.name))
         .find(g => taskSpec.instances.map(_.name).forall(i => g.instances.map(_.name).contains(i)))
@@ -349,6 +349,7 @@ object Workers extends Logging {
 
     /** List active TASK Instance Fleet */
     override protected def list(): List[TaskRunning] = {
+      logger.info("Worker: List active TASK Instance Fleet")
       val request = new ListInstanceFleetsRequest().withClusterId(clusterId)
       client.listInstanceFleets(request)
         .getInstanceFleets.asScala.toList
@@ -364,6 +365,7 @@ object Workers extends Logging {
 
     /** Resize TASK Instance Fleet */
     override def resize(count: Int): scala.Unit = {
+      logger.info("Worker: Resize TASK Instance Fleet")
       val taskId = managed.head.id
       val (onDemandCapacity, spotCapacity) = if (Config.IfShouldUseSpot) (0, count) else (count, 0)
 
@@ -378,6 +380,7 @@ object Workers extends Logging {
 
     /** Refresh the status of the managed Instance Fleet */
     override protected def refresh(): Runnable = () => {
+      logger.info("Worker: Refresh the status of the managed Instance Fleet")
       val request = new ListInstanceFleetsRequest().withClusterId(clusterId)
       val response = client.listInstanceFleets(request)
 
