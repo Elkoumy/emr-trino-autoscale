@@ -388,7 +388,7 @@ object Workers extends Logging {
       logger.info("Worker: Refresh the status of the managed Instance Fleet")
       val request = new ListInstanceFleetsRequest().withClusterId(clusterId)
       val response = client.listInstanceFleets(request)
-      logger.info(s"Status $response")
+      logger.info(s"response $response")
       val status = response.getInstanceFleets.asScala.toList
         .filter(g => managed.map(_.id).toList.contains(g.getId))
         .map { g =>
@@ -415,6 +415,8 @@ object Workers extends Logging {
 
           TaskState(id, status, isResizing, isSuspended, isExcluded, running, requested, message, lastSuspendedTimeMs)
         }
+
+      logger.info(s"status $status")
 
       managedTaskStatus.replaceAll(status)
 
