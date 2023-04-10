@@ -389,6 +389,13 @@ object Workers extends Logging {
       val request = new ListInstanceFleetsRequest().withClusterId(clusterId)
       val response = client.listInstanceFleets(request)
       logger.info(s"response $response")
+      val response_list = response.getInstanceFleets.asScala.toList
+      logger.info(s"response_list $response_list")
+      val mapped_manage = managed.map(_.id).toList
+      logger.info(s"mapped_manage $mapped_manage")
+      val response_filter = response.getInstanceFleets.asScala.toList
+        .filter(g => managed.map(_.id).toList.contains(g.getId))
+      logger.info(s"response_filter $response_filter")
       val status = response.getInstanceFleets.asScala.toList
         .filter(g => managed.map(_.id).toList.contains(g.getId))
         .map { g =>
