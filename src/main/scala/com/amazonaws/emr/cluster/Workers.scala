@@ -75,6 +75,12 @@ object Workers extends Logging {
   private def isInstanceFleet(clusterId: String): Boolean = {
     val request = new DescribeClusterRequest().withClusterId(clusterId)
     val response = client.describeCluster(request)
+    logger.info("Inside isInstanceFleet")
+    logger.info(s"isInstanceFleet response $response")
+    val instance_type =response.getCluster.getInstanceCollectionType
+    logger.info(s"isInstanceFleet instance_type $instance_type")
+    val expected_type = InstanceCollectionType.INSTANCE_FLEET.toString
+    logger.info(s"isInstanceFleet expected_type $expected_type")
     response.getCluster.getInstanceCollectionType.equalsIgnoreCase(InstanceCollectionType.INSTANCE_FLEET.toString)
   }
 
@@ -298,7 +304,7 @@ object Workers extends Logging {
 
     /** Initialize Instance Fleet */
     override protected def initialize(): scala.Unit = {
-      logger.info("Inside IfWorkers.initialize")
+      logger.info("Inside Instance Fleet  IfWorkers.initialize")
       logger.info(s"Initializing $label")
       val instanceTypes = Config.IfInstanceTypes
       val instanceWights = Config.IfInstanceTypesUnits.map(_.toInt)
