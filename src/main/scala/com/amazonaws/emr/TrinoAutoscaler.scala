@@ -12,13 +12,16 @@ import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
 object TrinoAutoscaler extends App with Logging {
-
+  logger.info("************************")
+  logger.info("TrinoAutoscaler")
   implicit val system: ActorSystem = ActorSystem()
   implicit val executor: ExecutionContextExecutor = system.dispatcher
   implicit val scheduler: Scheduler = system.scheduler
 
   private val workers = Workers(EmrClusterId)
+  logger.info("Workers created")
   private val scaling = new ScalingManager(workers)
+  logger.info("ScalingManager created")
   private val metrics = new TrinoMetricStore()
   logger.info("Starting TrinoAutoscaler .... !")
   system.scheduler.scheduleWithFixedDelay(

@@ -431,7 +431,7 @@ object Workers extends Logging {
           TaskState(id, status, isResizing, isSuspended, isExcluded, running, requested, message, lastSuspendedTimeMs)
         }
 
-      logger.info(s"status $status")
+//      logger.info(s"status $status")
 
       managedTaskStatus.replaceAll(status)
 

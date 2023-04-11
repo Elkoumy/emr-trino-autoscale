@@ -36,6 +36,7 @@ class ScalingManager(workers: Workers) extends Logging {
       evaluateAndPerform(ResizeAction(EXPAND, store.getRequiredWorkers))
     } else {
       if ((System.currentTimeMillis() - scalingLastOpTimeMs) > scalingCoolDownTimeMs) {
+        logger.info("Calling Evaluate")
         evaluateAndPerform(algorithm.evaluate(workers.running, store.getRequiredWorkers, store.nodesCpuStats))
       } else {
         logger.info(
