@@ -391,8 +391,9 @@ object Workers extends Logging {
       logger.info(s"response $response")
       val response_list = response.getInstanceFleets.asScala.toList
       logger.info(s"response_list $response_list")
-      logger.info(s"managed $managed")
-      val mapped_manage = managed.map(_.id).toList
+      val str_managed = managed.toString()
+      logger.info(s"managed $str_managed")
+      val mapped_manage = managed.map(_.id).toList.toString()
       logger.info(s"mapped_manage $mapped_manage")
       val response_filter = response.getInstanceFleets.asScala.toList
         .filter(g => managed.map(_.id).toList.contains(g.getId))
